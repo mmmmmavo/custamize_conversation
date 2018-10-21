@@ -1,0 +1,11 @@
+{
+  "tutorial": true,
+  "sectenceFieldToConfirm": "",
+  "welcome_prompt": "",
+  "conversation": {
+    "1": "会話２",
+    "2": "会話３",
+    "length": "2",
+    "welcome": "ほげ"
+  }
+}
