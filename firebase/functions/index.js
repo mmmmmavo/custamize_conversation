@@ -85,11 +85,9 @@ app.intent('Default Welcome Intent', async conv => {
     let ConvIdUserSpecified = await fetchUserSpecifiedConvId(conv.user.id)
     let convConfig = await fetchConv(ConvIdUserSpecified)
 
-    console.log(convConfig);
-
-    conv.data.config = convConfig
+    conv.data.config = {"conversation": convConfig}
     conv.data.config.counter = 0
-    let speach = convConfig.welcome
+    let speach = convConfig["welcome"]
     conv.contexts.set('prodSession', Number(convConfig.length), {});
 
     if(convConfig.length === 0){

@@ -1,0 +1,17 @@
+[debug] [2018-10-21T03:22:59.218Z] ----------------------------------------------------------------------
+[debug] [2018-10-21T03:22:59.221Z] Command:       /Users/takahashinaoya/.nodebrew/node/v8.10.0/bin/node /Users/takahashinaoya/.npm-global/bin/firebase deploy
+[debug] [2018-10-21T03:22:59.221Z] CLI Version:   4.2.1
+[debug] [2018-10-21T03:22:59.221Z] Platform:      darwin
+[debug] [2018-10-21T03:22:59.221Z] Node Version:  v8.10.0
+[debug] [2018-10-21T03:22:59.222Z] Time:          Sun Oct 21 2018 12:22:59 GMT+0900 (JST)
+[debug] [2018-10-21T03:22:59.222Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-10-21T03:22:59.243Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-10-21T03:22:59.243Z] > authorizing via signed-in user
+[debug] [2018-10-21T03:22:59.246Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-10-21T03:22:59.246Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+
+[debug] [2018-10-21T03:22:59.520Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-21T03:22:59.542Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/customize-conversation  
+ 
+[debug] [2018-10-21T03:23:00.309Z] <<< HTTP RESPONSE 200
