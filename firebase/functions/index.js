@@ -37,6 +37,19 @@ async function isConversatinSet(UserIdFromGoogleHome){
   }
 }
 
+async function fetchUserSpecifiedConvId(userId){
+  let userRef = await db.collection("users")
+  let user = await userRef.doc(userId).get().then(s => s.data())
+  let ConvId = await user.conversation
+  return ConvId
+}
+
+async function fetchConv(convId){
+  let convRef = await db.collection("conversations")
+  let conv = await convRef.doc(convId).get().then(s => s.data())
+  return conv
+}
+
 async function createUser(UserIdFromGoogleHome){
   let userRef = await db.collection("users")
   let userDocRef = await userRef.doc(UserIdFromGoogleHome)
@@ -60,7 +73,6 @@ async function setConvOnUser(userId,convId){
   await userDocRef.update({
     conversation:convId
   })
-  // here!
 }
 
 app.intent('Default Welcome Intent', async conv => {
@@ -70,33 +82,17 @@ app.intent('Default Welcome Intent', async conv => {
 
   if(convAlreadySetBool){
 
-    let config = {
-      "mode": "prod",
-      "sectenceFieldToConfirm": "",
-      "welcome_prompt": "",
-      "conversation": {
-        "1": "会話２",
-        "2": "会話３",
-        "length": "2",
-        "welcome": "ほげ",
-        "user": `ABwppHF68tHYihEa8HHucf52nkcb4XA4WnFMgbO46cXQ782bH03KSOlR5zBQmKShSwVEFoxSOwKkQfk0hbRZYYuFJsxNrg`
-      }
-    }
-    let convRef = await db.collection("conversations")
-    let docRef = await convRef.add(
-      config["conversation"]
-    )
-    let createdConvId = await docRef.id
+    let ConvIdUserSpecified = await fetchUserSpecifiedConvId(conv.user.id)
+    let convConfig = await fetchConv(ConvIdUserSpecified)
 
-    console.log(createdConvId);
+    console.log(convConfig);
 
-
-    conv.data.config = config
+    conv.data.config = convConfig
     conv.data.config.counter = 0
-    let speach = config["conversation"]["welcome"]
-    conv.contexts.set('prodSession', Number(config["conversation"]["length"]), {});
+    let speach = convConfig.welcome
+    conv.contexts.set('prodSession', Number(convConfig.length), {});
 
-    if(config["conversation"]["length"] === 0){
+    if(convConfig.length === 0){
       conv.close("<speak><prosody rate='slow'>" + speach + "</prosody></speak>");
     }else{
       conv.ask("<speak><prosody rate='slow'>" + speach + "</prosody></speak>");
