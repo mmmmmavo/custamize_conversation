@@ -1,65 +1,231 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+<html lang="ja">
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/5.5.4/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/5.5.4/firebase-auth.js"></script>
-    <script defer src="/__/firebase/5.5.4/firebase-database.js"></script>
-    <script defer src="/__/firebase/5.5.4/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/5.5.4/firebase-storage.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>title</title>
+  <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+  <style>
+    h1 {
+      border-bottom: solid 3px #cce4ff;
+      position: relative;
+    }
+
+    h1:after {
+      position: absolute;
+      content: " ";
+      display: block;
+      border-bottom: solid 3px #5472cd;
+      bottom: -3px;
+      width: 20%;
+    }
+
+    img {
+      width: 100%;
+      height: 300px;
+      object-position: 100% 0%;
+      object-fit: cover;
+    }
+
+    .table {
+      width: 100%;
+      table-layout: fixed;
+      word-wrap: break-word;
+    }
+
+    .font-small {
+      font-size;
+      75%;
+    }
+
+
+    
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="header col-xs-offset-1 col-xs-10">
+      <h1 class="col-xs-offset-1 col-xs-10">Conversations List</h1>
+      </div>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+    <div class="row">
+      <div class="col-xs-12">
+        <h4><br><a href="./create.html">to-> Create My Convertation!</a></h4>
+      </div>
+    </div>
 
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
-        }
+    <div class="row">
+      <div class="col-xs-12">
+      <table id="comments" class="table table-striped table-responsive" style="font-size: 9pt; line-height: 300%; "></table>
+    </div>
+    </div>
+
+
+  </div>
+
+  </div>
+  </div>
+
+
+
+  <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase.js"></script>
+  <!-- <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-auth.js"></script> -->
+
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyAaras5fKwq9-yeQraOAdxMZKVPZeEnKZk",
+      authDomain: "customize-conversation.firebaseapp.com",
+      databaseURL: "https://customize-conversation.firebaseio.com",
+      projectId: "customize-conversation",
+      storageBucket: "customize-conversation.appspot.com ",
+      messagingSenderId: "187665952398"
+    };
+    firebase.initializeApp(config);
+
+
+
+
+
+    var db = firebase.firestore();
+    db.settings({
+     timestampsInSnapshots: true
+    });
+
+    async function fetchUserByEmail(mail){
+      let userRef = await db.collection("users")
+      let user = await userRef.doc(mail).get().then(s => s.data())
+      return user
+    }
+
+
+
+    function drawConversations() {
+      let table = document.getElementById("comments")
+
+      // 一括取得
+      let elementCounter = 0
+      db.collection("conversations").get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+              console.log(`${doc.id} => ${doc.data()["length"]}`);
+
+              var rows = table.insertRow(0);
+              rows.className = "col-xs-12;"
+
+              let cell1 = table.rows[0].insertCell(-1);
+              var docRef = db.collection("users").doc(doc.data()["user"]);
+              docRef.get().then(function(doc) {
+                  if (doc.exists) {
+                    cell1.innerHTML = doc.data().name
+                  } else {
+                      // doc.data() will be undefined in this case
+                      console.log("No such document!");
+                  }
+              }).catch(function(error) {
+                  console.log("Error getting document:", error);
+              });
+              cell1.stile = "col-xs-4; font-size: 5pt; line-height: 200%; "
+
+              len = Number(doc.data()["length"])
+              let cell2 = table.rows[0].insertCell(-1);
+              let text = `Home「${doc.data()["welcome"]}」<br>`
+
+              for(var i = 1;i<len+1;i ++){
+                text += ` You「*(なんでも)」<br>`
+                text += `Home「${doc.data()[String(i)]}」<br>`
+                if(i == len){
+                  text += "(会話終了)"
+                }
+              }
+              cell2.innerHTML = text
+              cell2.className = "col-xs-2 text-primary"
+
+              let cell3 = table.rows[0].insertCell(-1);
+              var btn = document.createElement('button')
+              btn.type = 'button';
+              btn.onclick = function() { // onclick には関数を入れる
+                  console.log(doc.id)
+              };
+              btn.className = "btn btn-success"
+              cell3.appendChild(btn)
+              btn.id = `input${elementCounter}`
+              btn.textContent = "これを設定！"
+              cell3.className = "col-xs-6"
+
+              elementCounter ++
+
+          });
       });
-    </script>
-  </body>
+    }
+
+    drawConversations()
+    // 個別取得
+    var docRef = db.collection("users").doc("ABwppHF68tHYihEa8HHucf52nkcb4XA4WnFMgbO46cXQ782bH03KSOlR5zBQmKShSwVEFoxSOwKkQfk0hbRZYYuFJsxNrg");
+    docRef.get().then(function(doc) {
+        if (doc.exists) {
+            console.log("Document data:", doc.data());
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }).catch(function(error) {
+        console.log("Error getting document:", error);
+    });
+
+
+    // AUTH
+
+    var provider = new firebase.auth.GoogleAuthProvider();
+
+    var user = firebase.auth().currentUser;
+
+    if (user) {
+      // User is signed in.
+    } else {
+      firebase.auth().signInWithRedirect(provider);
+    }
+
+
+
+
+
+    firebase.auth().getRedirectResult().then(function(result) {
+    if (result.credential) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        console.log(token);
+
+        // ...
+      }
+      // The signed-in user info.
+      var user = result.user;
+      a = fetchUserByEmail("pyam.bugys@gmail.com").then(s => console.log(s));
+      console.log(a);
+      console.log(user);
+    }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+    });
+
+  </script>
+
+
+</body>
+
 </html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Create New Conversation</title>
+  <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+
+  <style>
+    h1 {
+      border-bottom: solid 3px #cce4ff;
+      position: relative;
+    }
+
+    h1:after {
+      position: absolute;
+      content: " ";
+      display: block;
+      border-bottom: solid 3px #5472cd;
+      bottom: -3px;
+      width: 20%;
+    }
+
+    img {
+      width: 100%;
+      height: 300px;
+      object-position: 100% 0%;
+      object-fit: cover;
+    }
+
+    .table {
+      width: 100%;
+      table-layout: fixed;
+      word-wrap: break-word;
+    }
+
+    .font-small {
+      font-size;
+      75%;
+    }
+
+
+    
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="header col-xs-offset-1 col-xs-10">
+        <h1 class="col-xs-offset-1 col-xs-10">Create New Conversation</h1>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+        <h4><br><a href="./index.html">to-> ConversationsList</a></h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+        <form action="#" id="form">
+          <label></label><br>
+          <input id="welcomeInput" value="起動時の発話を設定"><br>
+          <label>セッションの回数</label>
+          <select id="numberSelect" name="sessionN" onChange="disabling(value)">
+            <option value="1">1回</option>
+            <option value="2">2回</option>
+            <option value="3">3回</option>
+            <option value="4">4回</option>
+            <option value="5">5回</option>
+          </select><br>
+          <input id="session1" value="セッション1"><br>
+          <input id="session2" disabled value="セッション2"><br>
+          <input id="session3" disabled value="セッション3"><br>
+          <input id="session4" disabled value="セッション4"><br>
+          <input id="session5" disabled value="セッション5"><br>
+
+          <input type="submit" class="btn btn-success" value="GoogleHomeに設定する">
+        </form>
+
+      </div>
+    </div>
+
+
+  </div>
+
+  </div>
+  </div>
+
+
+
+  <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyAaras5fKwq9-yeQraOAdxMZKVPZeEnKZk",
+      authDomain: "customize-conversation.firebaseapp.com",
+      databaseURL: "https://customize-conversation.firebaseio.com",
+      projectId: "customize-conversation",
+      storageBucket: "customize-conversation.appspot.com",
+      messagingSenderId: "187665952398"
+    };
+    firebase.initializeApp(config);
+
+    var db = firebase.firestore();
+    db.settings({
+      timestampsInSnapshots: true
+    });
+
+
+
+    function disabling(val){
+      let specified_n = Number(val)
+      for(var i = 1; i<6;i++){
+        document.getElementById(`session${i}`).disabled = false
+      }
+      for(var i = specified_n+1; i<5+1; i++){
+        document.getElementById(`session${i}`).disabled = true
+      }
+    }
+
+
+    document.getElementById("form").onsubmit = function(){
+      let jsonToCreate = {}
+      jsonToCreate["welcome"] = document.getElementById(`welcomeInput`).value
+      let convCount = document.getElementById(`numberSelect`).value
+      jsonToCreate["length"] = convCount
+      for(var i = 1;i < Number(convCount)+1;i++){
+        jsonToCreate[String(i)] = document.getElementById(`session${String(i)}`).value
+      }
+      console.log(jsonToCreate)
+    }
+
+
+    // 個別取得
+    var docRef = db.collection("users").doc("ABwppHF68tHYihEa8HHucf52nkcb4XA4WnFMgbO46cXQ782bH03KSOlR5zBQmKShSwVEFoxSOwKkQfk0hbRZYYuFJsxNrg");
+    docRef.get().then(function(doc) {
+      if (doc.exists) {
+        console.log("Document data:", doc.data());
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    }).catch(function(error) {
+      console.log("Error getting document:", error);
+    });
+  </script>
+
+
+</body>
+
+</html>

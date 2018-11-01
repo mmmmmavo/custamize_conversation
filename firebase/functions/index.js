@@ -1,6 +1,14 @@
 'use strict';
-const { dialogflow } = require('actions-on-google');
-const app = dialogflow({ debug: true });
+const {
+  dialogflow,
+  SignIn,
+  BasicCard,
+  Image
+} = require('actions-on-google');
+const app = dialogflow({
+  debug: true,
+  clientId: "187665952398-00pdbaeqqabgk5di7lb954ukkcm2qea5.apps.googleusercontent.com"
+ });
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 var fs = require('fs');
@@ -75,10 +83,20 @@ async function setConvOnUser(userId,convId){
   })
 }
 
+async function setEmailOnUser(userId,email){
+  let userRef = await db.collection("users")
+  let userDocRef = await userRef.doc(userId)
+  await userDocRef.update({
+    email:email
+  })
+}
+
 app.intent('Default Welcome Intent', async conv => {
 
   // ユーザーがdbになかったら登録もする
   let convAlreadySetBool = await isConversatinSet(conv.user.id)
+  console.log(conv.user.storage.userId);
+  // let convAlreadySetBool = await isConversatinSet(conv.user.storage.userId)
 
   if(convAlreadySetBool){
 
@@ -148,9 +166,17 @@ app.intent('confirmSessionContinue-noIntent', async conv => {
   coversationToCreate["conversation"]["user"] = conv.user.id
   let convId = await createConversation(coversationToCreate["conversation"])
   await setConvOnUser(conv.user.id,convId)
+  // await setConvOnUser(conv.user.storage.userId,convId)
 
-  let speach = `会話の設定が完了しました。次回起動時に仰せの通りにお話しします。`
-  conv.close(speach);
+  // サインイン済みだったら
+  if(conv.user.profile.payload){
+    let speach = `会話の設定が完了しました。次回起動時に仰せの通りにお話しします。`
+    conv.close(speach);
+  } else{
+      let speach = `会話の設定が完了しました。次回起動時に仰せの通りにお話しします。webサイトと連携するために、`
+      conv.close(new SignIn(speach));
+  }
+
 });
 
 app.intent('sessionSpeachConfig-Intent', async conv => {
@@ -189,6 +215,31 @@ app.intent('prodSession-Intent', async conv => {
     conv.ask(speach)
   }
 
+});
+
+app.intent('prodSession-configIntent', async conv => {
+  conv.contexts.set('welcomePromptConfig', 1, {});
+
+  conv.ask("会話の設定モードです。アプリの起動時に、私はなんと言えばいいですか？")
+});
+
+app.intent("getSignin-Intent", async (conv, params, signin) => {
+  if (signin.status === "OK") {
+    const payload = conv.user.profile.payload;
+    const userId = payload.aud;
+    const name = payload.name;
+    const givenName = payload.given_name;
+    const familyName = payload.family_name;
+    const email = payload.email;
+    const emailVerified = payload.email_verified;
+    const picture = payload.picture;
+    await setEmailOnUser(conv.user.id,email)
+    // conv.ask(`${userId},${name},${givenName},${familyName},${email},${emailVerified},${picture}`)
+
+    conv.ask("会話の設定が完了しました。googlehomeアプリに表示されたカードから、webページを見ることができます。");
+  } else {
+    conv.ask("パーソナライズするためには、サインインしてください。");
+  }
 });
 
 
