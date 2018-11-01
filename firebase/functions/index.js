@@ -92,10 +92,14 @@ async function setEmailOnUser(userId,email){
 }
 
 app.intent('Default Welcome Intent', async conv => {
+  if(conv.user.profile.payload === undefined){
+    let speach = `webサイトと連携するために、`
+    conv.close(new SignIn(speach));
+  }
 
   // ユーザーがdbになかったら登録もする
   let convAlreadySetBool = await isConversatinSet(conv.user.id)
-  console.log(conv.user.storage.userId);
+  console.log(JSON.stringify(conv.user.profile));
   // let convAlreadySetBool = await isConversatinSet(conv.user.storage.userId)
 
   if(convAlreadySetBool){
@@ -167,10 +171,11 @@ app.intent('confirmSessionContinue-noIntent', async conv => {
   let convId = await createConversation(coversationToCreate["conversation"])
   await setConvOnUser(conv.user.id,convId)
   // await setConvOnUser(conv.user.storage.userId,convId)
-
   // サインイン済みだったら
   if(conv.user.profile.payload){
     let speach = `会話の設定が完了しました。次回起動時に仰せの通りにお話しします。`
+    const email = payload.email;
+    await setEmailOnUser(conv.user.id,email)
     conv.close(speach);
   } else{
       let speach = `会話の設定が完了しました。次回起動時に仰せの通りにお話しします。webサイトと連携するために、`
@@ -230,9 +235,9 @@ app.intent("getSignin-Intent", async (conv, params, signin) => {
     const name = payload.name;
     const givenName = payload.given_name;
     const familyName = payload.family_name;
-    const email = payload.email;
     const emailVerified = payload.email_verified;
     const picture = payload.picture;
+    const email = payload.email;
     await setEmailOnUser(conv.user.id,email)
     // conv.ask(`${userId},${name},${givenName},${familyName},${email},${emailVerified},${picture}`)
 
