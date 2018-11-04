@@ -54,13 +54,13 @@
   <div class="container-fluid">
     <div class="row">
       <div class="header col-xs-offset-1 col-xs-10">
-        <h1 class="col-xs-offset-1 col-xs-10">Create New Conversation</h1>
+        <h1 class="col-xs-offset-1 col-xs-10">会話を設定</h1>
       </div>
     </div>
 
     <div class="row">
       <div class="col-xs-12">
-        <h4><br><a href="./index.html">to-> ConversationsList</a></h4>
+        <h4><br><a href="./index.html">to-> みんながGoogleHomeに設定した会話</a></h4>
       </div>
     </div>
 
@@ -68,8 +68,8 @@
       <div class="col-xs-12">
         <form action="#" id="form">
           <label></label><br>
-          <input id="welcomeInput" value="起動時の発話を設定"><br>
-          <label>セッションの回数</label>
+          <textarea id="welcomeInput" value="">起動時の発話をここに！</textarea><br>
+          <label>会話の回数</label>
           <select id="numberSelect" name="sessionN" onChange="disabling(value)">
             <option value="1">1回</option>
             <option value="2">2回</option>
@@ -77,11 +77,11 @@
             <option value="4">4回</option>
             <option value="5">5回</option>
           </select><br>
-          <input id="session1" value="セッション1"><br>
-          <input id="session2" disabled value="セッション2"><br>
-          <input id="session3" disabled value="セッション3"><br>
-          <input id="session4" disabled value="セッション4"><br>
-          <input id="session5" disabled value="セッション5"><br>
+          <textarea id="session1" value="">1回目の会話</textarea><br>
+          <textarea id="session2" disabled value="">2回目の会話</textarea><br>
+          <textarea id="session3" disabled value="">3回目の会話</textarea><br>
+          <textarea id="session4" disabled value="">4回目の会話</textarea><br>
+          <textarea id="session5" disabled value="">5回目の会話</textarea><br>
 
           <input type="submit" class="btn btn-success" value="GoogleHomeに設定する">
         </form>
@@ -137,6 +137,30 @@
         jsonToCreate[String(i)] = document.getElementById(`session${String(i)}`).value
       }
       console.log(jsonToCreate)
+
+      // firestore conversationsにcreate
+      let user = db.collection("conversations").add(jsonToCreate)
+        .then(function(data){
+          console.log(data.id);
+
+          let user = db.collection("users")
+            .where("email", "==", firebase.auth().currentUser.email).get().then(function(snapshot){
+              snapshot.forEach(function(doc){
+                let userid = doc.id
+                firebase.firestore().collection('users').doc(userid).update({
+                  conversation: data.id
+                }).then(function(){
+                  db.collection("conversations").doc(data.id).update({
+                    user:userid
+                  }).then(function(){})
+                  console.log('会話きセットしました！');
+                });
+              })
+            });
+          }).then(function(){
+            console.log('会話きセットしました！');
+          });
+
     }
 
 

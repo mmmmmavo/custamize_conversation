@@ -92,12 +92,13 @@ async function setEmailOnUser(userId,email){
 }
 
 app.intent('Default Welcome Intent', async conv => {
-  if(conv.user.profile.payload === undefined){
-    let speach = `webサイトと連携するために、`
-    conv.close(new SignIn(speach));
-  }
+  console.log(conv.user.id)
 
-  // ユーザーがdbになかったら登録もする
+  // if(conv.user.profile.payload === undefined){
+  //   let speach = `webサイトと連携するために、`
+  //   conv.close(new SignIn(speach));
+  // }
+
   let convAlreadySetBool = await isConversatinSet(conv.user.id)
   console.log(JSON.stringify(conv.user.profile));
   // let convAlreadySetBool = await isConversatinSet(conv.user.storage.userId)
@@ -140,14 +141,18 @@ app.intent('Default Welcome Intent', async conv => {
 
 
 app.intent('welcomePromptConfig-Intent', async conv => {
+  console.log(conv.user.id)
+
   let welcomePromptToConfirm = conv.input.raw
   conv.data.config.conversation.welcome = welcomePromptToConfirm
-  let speach = `起動時の私の発話は、${welcomePromptToConfirm}で良いですか？`
+  let speach = `起動時の私の発話は、${welcomePromptToConfirm}、で良いですか？`
   conv.contexts.set('welcomePromptConfirmation', 1, {});
   conv.ask(speach);
 });
 
 app.intent('welcomePromptConfirmation-yesIntent', async conv => {
+  console.log(conv.user.id)
+
   let speach = `起動時の発話を設定しました。まだ会話を続けますか？`
   conv.contexts.set('confirmSessionContinue', 1, {});
   conv.ask(speach);
@@ -166,19 +171,23 @@ app.intent('confirmSessionContinue-yesIntent', async conv => {
 });
 
 app.intent('confirmSessionContinue-noIntent', async conv => {
+  console.log(conv.user.id)
+
   let coversationToCreate = conv.data.config
   coversationToCreate["conversation"]["user"] = conv.user.id
   let convId = await createConversation(coversationToCreate["conversation"])
   await setConvOnUser(conv.user.id,convId)
+  const payload = conv.user.profile.payload;
+
   // await setConvOnUser(conv.user.storage.userId,convId)
   // サインイン済みだったら
-  if(conv.user.profile.payload){
-    let speach = `会話の設定が完了しました。次回起動時に仰せの通りにお話しします。`
+  if(payload){
+    let speach = `会話の設定が完了しました。次回起動時にそのようにお話しします。`
     const email = payload.email;
     await setEmailOnUser(conv.user.id,email)
     conv.close(speach);
   } else{
-      let speach = `会話の設定が完了しました。次回起動時に仰せの通りにお話しします。webサイトと連携するために、`
+      let speach = `会話の設定が完了しました。次回起動時にそのようにお話しします。webサイトと連携するために、`
       conv.close(new SignIn(speach));
   }
 
@@ -186,7 +195,7 @@ app.intent('confirmSessionContinue-noIntent', async conv => {
 
 app.intent('sessionSpeachConfig-Intent', async conv => {
   let sessionSpeachToConfirm = conv.input.raw
-  let speach = `私は${sessionSpeachToConfirm}と言えば良いですか？`
+  let speach = `私は、${sessionSpeachToConfirm}、と言えば良いですか？`
   conv.data.config.sectenceFieldToConfirm = sessionSpeachToConfirm
   conv.contexts.set('sessionSpeachConfirmation', 1, {"text":sessionSpeachToConfirm});
   conv.ask(speach);

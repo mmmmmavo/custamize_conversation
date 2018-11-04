@@ -52,17 +52,21 @@
 
 <body>
   <div class="container-fluid">
+
     <div class="row">
       <div class="header col-xs-offset-1 col-xs-10">
       <h1 class="col-xs-offset-1 col-xs-10">みんながGoogleHomeに設定した会話</h1>
       </div>
     </div>
 
-    <div class="row">
+    <input type="submit" onclick="googleauth();" value="ログイン">
+
+
+    <!-- <div class="row">
       <div class="col-xs-12">
-        <h4><br><a href="./create.html">to-> 会話を設定!</a></h4>
+        <h4><br><a href="./create.html">to-> Create My Convertation!</a></h4>
       </div>
-    </div>
+    </div> -->
 
     <div class="row">
       <div class="col-xs-12">
@@ -75,6 +79,7 @@
 
   </div>
   </div>
+
 
 
 
@@ -103,8 +108,8 @@
     });
 
     async function fetchUserByEmail(mail){
-      let userRef = await db.collection("users")
-      let user = await userRef.doc(mail).get().then(s => s.data())
+      let userRef = db.collection("users")
+      let user = userRef.doc(mail).get().then(s => s.data())
       return user
     }
 
@@ -150,18 +155,17 @@
               cell2.innerHTML = text
               cell2.className = "col-xs-2 text-primary"
 
-              let cell3 = table.rows[0].insertCell(-1);
-              var btn = document.createElement('button')
-              btn.type = 'button';
-              btn.onclick = function() { // onclick には関数を入れる
-                  console.log(doc.id)
-                  setConv(firebase.auth().currentUser.email,doc.id);
-              };
-              btn.className = "btn btn-success"
-              cell3.appendChild(btn)
-              btn.id = `input${elementCounter}`
-              btn.textContent = "これを設定！"
-              cell3.className = "col-xs-6"
+              // let cell3 = table.rows[0].insertCell(-1);
+              // var btn = document.createElement('button')
+              // btn.type = 'button';
+              // btn.onclick = function() { // onclick には関数を入れる
+              //     console.log(doc.id)
+              // };
+              // btn.className = "btn btn-success"
+              // cell3.appendChild(btn)
+              // btn.id = `input${elementCounter}`
+              // btn.textContent = "これを設定！"
+              // cell3.className = "col-xs-6"
 
               elementCounter ++
 
@@ -170,24 +174,6 @@
     }
 
     drawConversations()
-
-    function setConv(mail,convId){
-
-      let user = db.collection("users")
-        .where("email", "==", mail).get().then(function(snapshot){
-          snapshot.forEach(function(doc){
-            let userid = doc.id
-            firebase.firestore().collection('users').doc(userid).update({
-              conversation: convId
-            }).then(function(){
-              console.log('会話きセットしました！');
-            });
-          })
-        });
-
-    }
-
-
     // 個別取得
     var docRef = db.collection("users").doc("ABwppHF68tHYihEa8HHucf52nkcb4XA4WnFMgbO46cXQ782bH03KSOlR5zBQmKShSwVEFoxSOwKkQfk0hbRZYYuFJsxNrg");
     docRef.get().then(function(doc) {
@@ -203,33 +189,54 @@
 
 
     // AUTH
-    var user = firebase.auth().currentUser;
-    console.log("user");
-    console.log(user);
+
+    function googleauth(){
+      var provider = new firebase.auth.GoogleAuthProvider();
+
+      var user = firebase.auth().currentUser;
+
+      if (user) {
+        console.log(user);
+        // User is signed in.
+      } else {
+        console.log("un signin user");
+        firebase.auth().signInWithRedirect(provider);
+      }
+
+      firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          window.location = 'index.html'; //After successful login, user will be redirected to home.html
+        } else{
+        }
+      });
+    }
 
 
-    // firebase.auth().getRedirectResult().then(function(result) {
-    // if (result.credential) {
-    //     // This gives you a Google Access Token. You can use it to access the Google API.
-    //     var token = result.credential.accessToken;
-    //     console.log(token);
-    //
-    //   }
-    //   // The signed-in user info.
-    //   var user = result.user;
-    //   a = fetchUserByEmail("pyam.bugys@gmail.com").then(s => console.log(s));
-    //   console.log(a);
-    //   console.log(user);
-    // }).catch(function(error) {
-    //   // Handle Errors here.
-    //   var errorCode = error.code;
-    //   var errorMessage = error.message;
-    //   // The email of the user's account used.
-    //   var email = error.email;
-    //   // The firebase.auth.AuthCredential type that was used.
-    //   var credential = error.credential;
-    //   // ...
-    // });
+    // firebase.auth().signInWithRedirect(provider);
+
+
+    firebase.auth().getRedirectResult().then(function(result) {
+    if (result.credential) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        console.log(token);
+        window.location = 'index.html';
+      }
+      // The signed-in user info.
+      var user = result.user;
+      a = fetchUserByEmail(firebase.auth().currentUser.email).then(s => console.log(s));
+      console.log(a);
+      console.log(user);
+    }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+    });
 
 
   </script>
